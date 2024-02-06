@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blog App</title>
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Create a blog post</h5>
+            <form id="blogForm" action="/create-post" method="POST">
+              <div class="form-group">
+                <label for="blogTitle">Blog Title</label>
+                <input type="text" class="form-control" id="blogTitle" name="blogTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="blogAuthor">Blog Author</label>
+                <input type="text" class="form-control" id="blogAuthor" name="blogAuthor" required>
+              </div>
+              <div class="form-group">
+                <label for="blogContent">Blog Content</label>
+                <textarea class="form-control" id="blogContent" name="blogContent" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <span id="message" class="text-success"></span>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-8">
+        <!-- Display blog posts in accordion fashion -->
+<div class="accordion" id="blogAccordion">
+    <% blogPosts.forEach(blogPost => { %>
+      <div class="card">
+        <div class="card-header" id="heading<%= blogPost.id %>">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= blogPost.id %>" aria-expanded="true" aria-controls="collapse<%= blogPost.id %>">
+              <%= blogPost.title %>
+            </button>
+          </h2>
+        </div>
+        <div id="collapse<%= blogPost.id %>" class="collapse" aria-labelledby="heading<%= blogPost.id %>" data-bs-parent="#blogAccordion">
+          <div class="card-body">
+            <p><strong>Author:</strong> <%= blogPost.author %></p>
+            <p><%= blogPost.content %></p>
+            <!-- Comments section for each blog post -->
+            <div class="card">
+                <div class="card-body">
+                <h5>Comments</h5>
+                <ul class="list-group">
+                    <% if (blogPost.BlogComments && blogPost.BlogComments.length > 0) { %>
+                    <% blogPost.BlogComments.forEach(comment => { %>
+                        <li class="list-group-item">
+                        <strong><%= comment.commentedBy %>:</strong>
+                        <%= comment.comment %>
+                        <form action="/blog/<%= blogPost.id %>/comment/<%= comment.id %>?_method=DELETE" method="POST">
+                            <button type="submit" class="btn btn-danger btn-sm float-end">Delete</button>
+                        </form>
+                        </li>
+                    <% }); %>
+                    <% } else { %>
+                    <li class="list-group-item">No comments yet.</li>
+                    <% } %>
+                </ul>
+                <!-- Add comment form -->
+                <form action="/blog/<%= blogPost.id %>/add-comment" method="POST">
+                    <div class="mb-3">
+                    <label for="commentedBy" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="commentedBy" name="commentedBy" required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="comment" class="form-label">Your Comment</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                </form>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  </div>  
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <!-- Your custom JavaScript for handling form submission, comments, etc. -->
+  <script>
+    // Add your JavaScript logic here
+  </script>
+</body>
+</html>
